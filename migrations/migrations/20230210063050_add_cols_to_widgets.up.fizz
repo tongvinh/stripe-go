@@ -1,2 +1,0 @@
-add_column("widgets", "is_recurring", "bool", {"default": 0})
-add_column("widgets", "plan_id", "string", {"default": ""})
