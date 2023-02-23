@@ -5,6 +5,7 @@ import (
 	"github.com/stripe/stripe-go/v72/customer"
 	"github.com/stripe/stripe-go/v72/paymentintent"
 	"github.com/stripe/stripe-go/v72/paymentmethod"
+	"github.com/stripe/stripe-go/v72/refund"
 	"github.com/stripe/stripe-go/v72/sub"
 )
 
@@ -107,13 +108,45 @@ func (c *Card) CreateCustomer(pm, email string) (*stripe.Customer, string, error
 	cust, err := customer.New(customerParams)
 	if err != nil {
 		msg := ""
-		if striperr, ok := err.(*stripe.Error); ok {
-			msg = cardErrorMessage(striperr.Code)
+		if striper, ok := err.(*stripe.Error); ok {
+			msg = cardErrorMessage(striper.Code)
 		}
 		return nil, msg, err
 	}
 
 	return cust, "", nil
+}
+
+func (c *Card) Refund(pi string, amount int) error {
+	stripe.Key = c.Secret
+	amountToRefund := int64(amount)
+
+	refundParams := &stripe.RefundParams{
+		Amount:        &amountToRefund,
+		PaymentIntent: &pi,
+	}
+
+	_, err := refund.New(refundParams)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Card) CancelSubscription(subID string) error {
+	stripe.Key = c.Secret
+
+	params := &stripe.SubscriptionParams{
+		CancelAtPeriodEnd: stripe.Bool(true),
+	}
+
+	_, err := sub.Update(subID, params)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // cardErrorMessage returns human readable versions of card error message

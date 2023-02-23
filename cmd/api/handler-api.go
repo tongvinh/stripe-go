@@ -160,8 +160,6 @@ func (app *application) CreateCustomerAndSubscribeToPlan(w http.ResponseWriter, 
 
 		//	create a new txn
 		amount, _ := strconv.Atoi(data.Amount)
-		/*expiryMonth, _ := strconv.Atoi(data.ExpiryMonth)
-		expiryYear, _ := strconv.Atoi(data.ExpiryYear)*/
 		txn := models.Transaction{
 			Amount:              amount,
 			Currency:            "cad",
@@ -169,6 +167,8 @@ func (app *application) CreateCustomerAndSubscribeToPlan(w http.ResponseWriter, 
 			ExpiryMonth:         data.ExpiryMonth,
 			ExpiryYear:          data.ExpiryYear,
 			TransactionStatusID: 2,
+			PaymentIntent:       subscription.ID,
+			PaymentMethod:       data.PaymentMethod,
 		}
 
 		txnID, err := app.SaveTransaction(txn)
