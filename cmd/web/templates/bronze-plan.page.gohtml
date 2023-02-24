@@ -24,9 +24,12 @@
         <hr>
 
         <div class="mb-3">
-            <label for="first-name" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="first-name" name="first_name"
-                   required="" autocomplete="first-name-new" />
+            <label for="first_name" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="first_name" name="first_name"
+                   required="" autocomplete="first_name-new" />
+            <div id="first_name-help" class="valid-feedback">
+
+            </div>
         </div>
 
         <div class="mb-3">
@@ -145,7 +148,7 @@
                     card_brand: result.paymentMethod.card.brand,
                     exp_month:  result.paymentMethod.card.exp_month,
                     exp_year: result.paymentMethod.card.exp_year,
-                    first_name: document.getElementById("first-name").value,
+                    first_name: document.getElementById("first_name").value,
                     last_name: document.getElementById("last-name").value,
                     amount: document.getElementById("amount").value,
                 }
@@ -162,15 +165,30 @@
                 fetch("{{.API}}/api/create-customer-and-subscribe-to-plan", requestOptions)
                     .then(response => response.json())
                     .then(function (data){
-                        console.log(data);
-                        processing.classList.add("d-none");
-                    showCardSuccess();
-                        sessionStorage.first_name = document.getElementById("first-name").value;
-                        sessionStorage.last_name = document.getElementById("last-name").value;
-                        sessionStorage.amount = "{{formatCurrency $widget.Price}}";
-                        sessionStorage.last_four = result.paymentMethod.card.last4;
+                        if (data.error ===false) {
+                            console.log(data);
+                            processing.classList.add("d-none");
+                            showCardSuccess();
+                            sessionStorage.first_name = document.getElementById("first_name").value;
+                            sessionStorage.last_name = document.getElementById("last-name").value;
+                            sessionStorage.amount = "{{formatCurrency $widget.Price}}";
+                            sessionStorage.last_four = result.paymentMethod.card.last4;
 
-                        location.href = "/receipt/bronze";
+                            location.href = "/receipt/bronze";
+                        }else{
+                            document.getElementById("charge_form").classList.remove("was-validated");
+
+                            Object.entries(data.errors).forEach((i) => {
+                                const [key, value] = i
+                                console.log(`${key} : ${value}`);
+                                document.getElementById(key).classList.add("is-invalid");
+                                document.getElementById(key+"-help").classList.remove("valid-feedback");
+                                document.getElementById(key+"-help").classList.add("invalid-feedback");
+                                document.getElementById(key+"-help").innerText = value;
+                            })
+
+                            showPayButtons();
+                        }
                     })
             }
         }

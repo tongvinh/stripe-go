@@ -15,6 +15,9 @@ require (
 	github.com/alexedwards/scs/mysqlstore v0.0.0-20230217120314-6b1bedc0f08c // indirect
 	github.com/bwmarrin/go-alone v0.0.0-20190806015146-742bb55d1631 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/phpdave11/gofpdf v1.4.2 // indirect
+	github.com/phpdave11/gofpdi v1.0.12 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/stretchr/testify v1.8.1 // indirect
 	github.com/toorop/go-dkim v0.0.0-20201103131630-e1cd1a0a5208 // indirect
 	github.com/xhit/go-simple-mail/v2 v2.13.0 // indirect
